@@ -31,6 +31,10 @@ db.audio_courses.createIndex({ title: 'text', description: 'text' });
 db.createCollection('audio_episodes');
 db.audio_episodes.createIndex({ courseId: 1 });
 
+db.createCollection('audio_progress');
+db.audio_progress.createIndex({ userId: 1, episodeId: 1 }, { unique: true });
+db.audio_progress.createIndex({ userId: 1, courseId: 1 });
+
 db.createCollection('ebooks');
 db.ebooks.createIndex({ creatorId: 1 });
 db.ebooks.createIndex({ title: 'text', description: 'text' });
@@ -38,6 +42,15 @@ db.ebooks.createIndex({ title: 'text', description: 'text' });
 db.createCollection('orders');
 db.orders.createIndex({ userId: 1 });
 db.orders.createIndex({ orderNo: 1 }, { unique: true });
+// 同一用户对同一商品只允许存在一笔有效订单（PENDING/PAID），重复提交/并发抢购数据库兜底
+db.orders.createIndex(
+  { userId: 1, type: 1, itemId: 1 },
+  {
+    unique: true,
+    name: 'uniq_valid_purchase_idx',
+    partialFilterExpression: { status: { $in: ['PENDING', 'PAID'] } }
+  }
+);
 
 db.createCollection('subscriptions');
 db.subscriptions.createIndex({ userId: 1 });

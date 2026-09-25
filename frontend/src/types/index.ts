@@ -50,7 +50,7 @@ export interface Article {
 export interface AudioCourse {
   id: string
   creatorId: string
-  creator: Creator
+  creator?: Creator
   title: string
   description: string
   cover?: string
@@ -58,7 +58,12 @@ export interface AudioCourse {
   episodeCount: number
   totalDuration: number
   isSeries: boolean
-  status: 'DRAFT' | 'PUBLISHED'
+  status: 'DRAFT' | 'PUBLISHED' | 'OFFLINE'
+  purchased?: boolean
+  owner?: boolean
+  trialSeconds?: number
+  continueEpisodeId?: string
+  episodes?: AudioEpisode[]
   createdAt: string
 }
 
@@ -68,9 +73,23 @@ export interface AudioEpisode {
   title: string
   description?: string
   duration: number
-  fileUrl: string
   sequence: number
-  createdAt: string
+  playable?: boolean
+  trialSeconds?: number | null
+  progressPosition?: number | null
+  completed?: boolean | null
+  createdAt?: string
+}
+
+export interface AudioProgress {
+  id?: string
+  userId?: string
+  courseId: string
+  episodeId: string
+  position: number
+  duration?: number
+  completed?: boolean
+  updatedAt?: string
 }
 
 export interface Ebook {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Table, Typography, Tag, Button, Space, Modal, Form, Input, Select, message, Spin } from 'antd'
 import { orderApi } from '../api/order'
 import type { Order } from '../types'
@@ -7,6 +8,7 @@ import dayjs from 'dayjs'
 const { Title } = Typography
 
 function MyOrders() {
+  const navigate = useNavigate()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(false)
   const [invoiceModalVisible, setInvoiceModalVisible] = useState(false)
@@ -120,6 +122,11 @@ function MyOrders() {
           {record.status === 'PENDING' && (
             <Button type="primary" size="small">
               去支付
+            </Button>
+          )}
+          {record.status === 'PAID' && record.type === 'AUDIO_PURCHASE' && (
+            <Button type="primary" size="small" onClick={() => navigate(`/audio/${record.itemId}`)}>
+              去学习
             </Button>
           )}
           {record.status === 'PAID' && (

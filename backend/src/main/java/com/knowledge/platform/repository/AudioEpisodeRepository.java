@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface AudioEpisodeRepository extends MongoRepository<AudioEpisode, String> {
     List<AudioEpisode> findByCourseIdOrderBySequenceAsc(String courseId);
     Optional<AudioEpisode> findByCourseIdAndId(String courseId, String id);
+    Optional<AudioEpisode> findFirstByCourseIdOrderBySequenceAsc(String courseId);
 }
