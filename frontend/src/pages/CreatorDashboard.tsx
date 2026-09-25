@@ -34,16 +34,31 @@ function CreatorDashboard() {
     try {
       const [columnsRes, audioRes, ebooksRes] = await Promise.all([
         columnApi.list({ size: 10 }),
-        audioApi.list({ size: 10 }),
+        audioApi.mine(),
         ebookApi.list({ size: 10 }),
       ])
       setColumns(columnsRes.data?.data?.content || columnsRes.data || [])
-      setAudio(audioRes.data?.data?.content || audioRes.data || [])
+      setAudio(audioRes.data?.data || [])
       setEbooks(ebooksRes.data?.data?.content || ebooksRes.data || [])
     } catch (error) {
       console.error('Failed to load dashboard data:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleToggleAudioStatus = async (item: AudioCourse) => {
+    try {
+      if (item.status === 'OFFLINE') {
+        await audioApi.publish(item.id)
+        message.success('课程已重新上架')
+      } else {
+        await audioApi.offline(item.id)
+        message.success('课程已下架，已购用户仍可继续收听')
+      }
+      loadData()
+    } catch (error) {
+      console.error('Toggle audio status failed:', error)
     }
   }
 
@@ -167,6 +182,14 @@ function CreatorDashboard() {
                   <Button type="link" key="view" onClick={() => navigate(`/audio/${item.id}`)}>
                     查看
                   </Button>,
+                  <Button
+                    type="link"
+                    key="toggle"
+                    danger={item.status !== 'OFFLINE'}
+                    onClick={() => handleToggleAudioStatus(item)}
+                  >
+                    {item.status === 'OFFLINE' ? '重新上架' : '下架'}
+                  </Button>,
                 ]}
               >
                 <List.Item.Meta
@@ -176,6 +199,13 @@ function CreatorDashboard() {
                     <div>
                       <Tag color="magenta">¥{item.price}</Tag>
                       <Tag>{item.episodeCount}集</Tag>
+                      {item.status === 'OFFLINE' ? (
+                        <Tag color="default">已下架</Tag>
+                      ) : item.status === 'PUBLISHED' ? (
+                        <Tag color="green">已上架</Tag>
+                      ) : (
+                        <Tag color="orange">草稿</Tag>
+                      )}
                     </div>
                   }
                 />

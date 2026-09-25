@@ -58,7 +58,7 @@ export interface AudioCourse {
   episodeCount: number
   totalDuration: number
   isSeries: boolean
-  status: 'DRAFT' | 'PUBLISHED'
+  status: 'DRAFT' | 'PUBLISHED' | 'OFFLINE'
   createdAt: string
 }
 
@@ -71,6 +71,22 @@ export interface AudioEpisode {
   fileUrl: string
   sequence: number
   createdAt: string
+}
+
+export interface AudioAccess {
+  canPlay: boolean
+  trial: boolean
+  trialSeconds: number
+  reason?: string
+}
+
+export interface AudioProgress {
+  id?: string
+  userId?: string
+  courseId: string
+  episodeId: string
+  position: number
+  updatedAt?: string
 }
 
 export interface Ebook {

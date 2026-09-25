@@ -1,7 +1,7 @@
 import api from './axios'
 
 export const orderApi = {
-  list: () => api.get('/orders'),
+  list: () => api.get('/my/orders'),
 
   getById: (id: string) => api.get(`/orders/${id}`),
 

@@ -38,6 +38,15 @@ db.ebooks.createIndex({ title: 'text', description: 'text' });
 db.createCollection('orders');
 db.orders.createIndex({ userId: 1 });
 db.orders.createIndex({ orderNo: 1 }, { unique: true });
+// 同一用户对同一商品只留一笔已支付订单（重复提交/并发抢购兜底）
+db.orders.createIndex(
+  { userId: 1, type: 1, itemId: 1 },
+  { unique: true, partialFilterExpression: { status: 'PAID' } }
+);
+
+db.createCollection('audio_progress');
+db.audio_progress.createIndex({ userId: 1, episodeId: 1 }, { unique: true });
+db.audio_progress.createIndex({ userId: 1, courseId: 1 });
 
 db.createCollection('subscriptions');
 db.subscriptions.createIndex({ userId: 1 });

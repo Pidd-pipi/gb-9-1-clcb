@@ -42,6 +42,7 @@ public class AudioCourse {
 
     public enum Status {
         DRAFT,
-        PUBLISHED
+        PUBLISHED,
+        OFFLINE
     }
 }
